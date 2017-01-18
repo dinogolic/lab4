@@ -18,6 +18,7 @@ import dao.LoginBean;
 import dao.LoginHandler;
 import dao.RegistracijaBean;
 import dao.RegistracijaHandler;
+import dao.RezervacijaBean;
 
 @Controller
 public class MainController {
@@ -80,7 +81,57 @@ public class MainController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/rezervacija", method = RequestMethod.POST)
 
+	public ModelAndView rezervacija(HttpServletRequest request, HttpServletResponse response,
+			@ModelAttribute("gradBean") GradBean gradBean)
+
+	{
+
+		ModelAndView model = null;
+		RegistracijaHandler rH = new RegistracijaHandler();
+		model = new ModelAndView("Rezervacija");
+		try
+
+		{
+			Map<String, String> parkinzi = rH.dajParkinge(gradBean.getNaziv());
+			Object rezervacijaBean = new RezervacijaBean();
+			model.addObject("rezervacijaBean", rezervacijaBean );
+			request.setAttribute("parkinzi", parkinzi);
+		}
+		catch(Exception e){
+			
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "/rezervacijaKon", method = RequestMethod.POST)
+
+	public ModelAndView rezervacijaKon(HttpServletRequest request, HttpServletResponse response,
+			@ModelAttribute("rezervacijaBean") RezervacijaBean rezervacijaBean)
+
+	{
+
+		ModelAndView model = null;
+		RegistracijaHandler rH = new RegistracijaHandler();
+		model = new ModelAndView("Konacno");
+		try
+
+		{
+			boolean rezervisano = rH.rezervisi(rezervacijaBean);
+			if(rezervisano) {
+				model = new ModelAndView("Konacno");
+				return model;
+			}
+		}
+		catch(Exception e){
+			
+		}
+		model = new ModelAndView("Parking");
+		Map<String, String> gradovi = RegistracijaHandler.dajGradove();
+		request.setAttribute("gradovi", gradovi);
+		return model;
+	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 
@@ -113,11 +164,8 @@ public class MainController {
 
 				try {
 
-					LoginHandler lH1 = new LoginHandler();
 					Map<String, String> gradovi = RegistracijaHandler.dajGradove();
-					gradovi.put("asdf", "asdf");
 					request.setAttribute("gradovi", gradovi);
-					model.addObject("test","Mirhat");
 					System.out.println("to to");
 
 					

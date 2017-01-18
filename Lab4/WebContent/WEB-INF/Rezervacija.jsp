@@ -21,13 +21,14 @@
 </head>
 <body style="background-image:url(http://www.planwallpaper.com/static/images/10e39f13ddfb80570f3e44fb2016cb76.jpg);">
 <div id="login-box">
- <form:form id="loginForm" method="post" action="rezervacija" modelAttribute="gradBean">
+ <form:form id="loginForm" method="post" action="rezervacijaKon" modelAttribute="rezervacijaBean">
  <select name="naziv">
-          <c:forEach items="${gradovi}" var="item" >
+          <c:forEach items="${parkinzi}" var="item" >
             <option value="${item.key}">${item.value}</option>
           </c:forEach>
         </select>
-
+<form:label path="sati">Sati</form:label>
+<form:input id="sati" name="sati" path="sati" /><br>
 <input type="submit" value="Dalje" />
 </form:form>
 

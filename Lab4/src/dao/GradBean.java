@@ -15,8 +15,6 @@ public class GradBean {
 		this.id = id;
 	}
 	private int id;
-	public GradBean(int id, String naziv) {
-		this.id = id;
-		this.naziv = naziv;
+	public GradBean() {
 	}
 }
