@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class RegistracijaHandler {
 	public Map<String, String> dajParkinge(String naziv) {
 		try	{
 			Connection conn = DBConnection.getConnection();
-		    PreparedStatement stmt = conn.prepareStatement("select * from smartparking.parking where grad_id = ?;");
+		    PreparedStatement stmt = conn.prepareStatement("select * from smartparking.parking pa where grad_id = ? and kapacitet > (select count(*) from smartparking.rezervacija where parking_id = pa.id and vrijeme_isticanja > now());");
 		    stmt.setString(1, naziv);
 		    ResultSet rs = stmt.executeQuery();
 		    Map<String, String> gradovi = new HashMap();
@@ -66,16 +67,35 @@ public class RegistracijaHandler {
 		}
 		return null;
 	}
+	
+	public static int dajIdKorisnika(String naziv) {
+		try	{
+			Connection conn = DBConnection.getConnection();
+		    PreparedStatement stmt = conn.prepareStatement("select id from smartparking.korisnik where korisnickoime = ?");
+		    stmt.setString(1, naziv);
+		    ResultSet rs = stmt.executeQuery();
+		    while(rs.next()) {
+		    	return rs.getInt("id");
+		    }
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return 1;
+	}
 
 	public boolean rezervisi(RezervacijaBean rezervacijaBean) {
 		try	{
 			Connection conn = DBConnection.getConnection();
 		    PreparedStatement stmt = conn.prepareStatement("insert into smartparking.rezervacija(korisnik_id, parking_id, vrijeme_isticanja, vrijeme_rezervacije) values(?,?,?,?)");
-		    stmt.setInt(1, 1);
+		    stmt.setInt(1, dajIdKorisnika(LoginBean.userid));
 		    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		    Date date = new Date();
+		    Calendar cl = Calendar.getInstance();
+		      cl.setTime(date);
+		      cl.add(Calendar.HOUR, Integer.valueOf(rezervacijaBean.getSati()));
 		    stmt.setInt(2, rezervacijaBean.getNaziv());
-		    stmt.setString(3, dateFormat.format(date));
+		    stmt.setString(3, dateFormat.format(cl.getTime()));
 		    stmt.setString(4, dateFormat.format(date));
 		    stmt.executeUpdate();
 			return true;

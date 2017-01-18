@@ -2,7 +2,7 @@ package dao;
 
 public class LoginBean
 {
-		private String userid;
+		public static String userid;
 		private String pwd;
 		private String name;
 		
@@ -10,7 +10,7 @@ public class LoginBean
 			return userid;
 		}
 		public void setUserid(String userid) {
-			this.userid = userid;
+			LoginBean.userid = userid;
 		}
 		public String getPwd() {
 			return pwd;
