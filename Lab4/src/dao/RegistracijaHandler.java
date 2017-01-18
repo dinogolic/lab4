@@ -2,6 +2,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RegistracijaHandler {
@@ -22,6 +25,25 @@ public class RegistracijaHandler {
 		}
 		
 		return false;
+	}
+	
+	public static Map<String, String> dajGradove() {
+		try	{
+			Connection conn = DBConnection.getConnection();
+		    PreparedStatement stmt = conn.prepareStatement("select * from smartparking.grad;");
+		    
+		    ResultSet rs = stmt.executeQuery();
+		    Map<String, String> gradovi = new HashMap();
+		    while(rs.next()) {
+		    	gradovi.put(String.valueOf(rs.getInt("id")), rs.getString("naziv"));
+		    }
+			return gradovi;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }

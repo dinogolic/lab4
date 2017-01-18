@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.stereotype.Controller;
 
+import dao.GradBean;
 import dao.LoginBean;
 import dao.LoginHandler;
 import dao.RegistracijaBean;
@@ -107,16 +109,18 @@ public class MainController {
 
 				request.setAttribute("loggedInUser", loginBean.getUserid());
 
-				model = new ModelAndView("UserList");
+				model = new ModelAndView("Parking");
 
 				try {
 
 					LoginHandler lH1 = new LoginHandler();
-					ArrayList<LoginBean> userList = new ArrayList<LoginBean>();
-					userList = lH1.getAllUsers();
-					model.addObject("userList", userList);
+					Map<String, String> gradovi = RegistracijaHandler.dajGradove();
+					gradovi.put("asdf", "asdf");
+					request.setAttribute("gradovi", gradovi);
+					model.addObject("test","Mirhat");
 					System.out.println("to to");
 
+					
 				} catch (Exception e) {
 					System.out.println("Error: " + e.toString());
 				}
